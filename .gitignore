@@ -1,0 +1,11 @@
+# build output (make it with: python build.py)
+dist/
+
+# test output
+tests/screenshots/
+
+# editor and system files
+__pycache__/
+.vscode/
+.DS_Store
+Thumbs.db
