@@ -1,0 +1,49 @@
+/* ---------- atmosphere ---------- */
+#vids { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+#vids video { position: absolute; inset: -3%; width: 106%; height: 106%; object-fit: cover; opacity: 0; transition: opacity 1.4s ease, filter .4s ease; }
+#vids video.on { opacity: 1; }
+body.vidon #table::before { opacity: 0; }
+#table::before { transition: opacity 1.2s; }
+#tint { position: absolute; inset: 0; opacity: 0; transition: opacity 1.4s ease, background 1.4s ease; pointer-events: none; }
+#fx { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.topr { display: flex; gap: 8px; }
+.ghost.icon { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; }
+.ghost.icon svg { width: 18px; height: 18px; }
+.ghost.icon svg path:not(:first-child) { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.ghost.icon[aria-pressed="false"] .w1, .ghost.icon[aria-pressed="false"] .w2 { display: none; }
+.ghost.icon[aria-pressed="true"] .x { display: none; }
+.ghost.icon[aria-pressed="true"] { background: rgba(255,255,255,.22); }
+
+/* slider on card 1 */
+.feel { margin: 8px 2px 0; }
+.feel input { -webkit-appearance: none; appearance: none; width: 100%; height: 26px; background: transparent; cursor: pointer; touch-action: none; }
+.feel input::-webkit-slider-runnable-track { height: 8px; border-radius: 99px; background: linear-gradient(90deg, rgba(255,255,255,.95) var(--p, 50%), rgba(255,255,255,.28) var(--p, 50%)); }
+.feel input::-moz-range-track { height: 8px; border-radius: 99px; background: rgba(255,255,255,.28); }
+.feel input::-moz-range-progress { height: 8px; border-radius: 99px; background: #fff; }
+.feel input::-webkit-slider-thumb { -webkit-appearance: none; width: 26px; height: 26px; margin-top: -9px; border-radius: 50%; background: var(--yellow); border: 3px solid #fff; box-shadow: 0 3px 10px rgba(0,0,0,.35); transition: transform .15s; }
+.feel input::-moz-range-thumb { width: 22px; height: 22px; border-radius: 50%; background: var(--yellow); border: 3px solid #fff; box-shadow: 0 3px 10px rgba(0,0,0,.35); }
+.feel input:active::-webkit-slider-thumb { transform: scale(1.18); }
+.feel input:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 6px; }
+.feel .ends { display: flex; justify-content: space-between; font-size: 12px; opacity: .92; margin-top: 2px; }
+.feel .ends .hint { opacity: .85; animation: hint 1.4s ease-in-out infinite; }
+.feel.used .ends .hint { visibility: hidden; animation: none; }
+@keyframes hint { 0%,100% { transform: translateX(-3px); } 50% { transform: translateX(3px); } }
+.face.text.card1 .logo { display: none; }
+.face.text.card1 .pause { margin-top: 2px; }
+
+/* seat pop when a card lands */
+.seat.pop .tok { animation: pop .7s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.32); } 100% { transform: scale(1); } }
+
+/* swipe */
+#stage { touch-action: pan-y; transition: transform .25s; }
+#stage.drag { transition: none; }
+.swipehint { position: absolute; z-index: 7; left: 50%; translate: -50% 0; top: calc(46% - var(--bw) * .69 - 34px); background: rgba(42,24,16,.82); padding: 5px 12px; border-radius: 999px; font-size: 13px; pointer-events: none; animation: nudge 1.6s ease-in-out 3; }
+@keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
+
+/* result */
+.mix { width: 100%; border-radius: 14px; display: block; box-shadow: 0 10px 26px rgba(0,0,0,.25); margin: 14px 0 8px; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chip { border: 0; border-radius: 999px; padding: 6px 12px; font-size: 14px; background: var(--c); color: var(--ink); box-shadow: 0 2px 0 rgba(0,0,0,.15); }
+.chip:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
