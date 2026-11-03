@@ -1,0 +1,53 @@
+/* ---------- title screen ---------- */
+body.titling #seats, body.titling #deck, body.titling #me, body.titling #hand, body.titling .top .pill, body.titling .brand { opacity: 0; pointer-events: none; }
+#seats, #deck, #me, .top .pill, .brand { transition: opacity .6s; }
+.title { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 60px 16px 20px; overflow-y: auto;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0,0,0,0) 0%, rgba(25,6,0,.42) 100%); animation: tIn .7s ease both; }
+.title.out { animation: tOut .45s ease forwards; pointer-events: none; }
+@keyframes tIn { from { opacity: 0; } }
+@keyframes tOut { to { opacity: 0; transform: scale(1.03); } }
+.t-inner { text-align: center; width: min(1000px, 100%); }
+.t-hand { width: clamp(52px, 6.5vw, 82px); display: block; margin: 0 auto; filter: drop-shadow(0 8px 18px rgba(0,0,0,.28)); transform-origin: 50% 92%; animation: wave 5s ease-in-out infinite; }
+@keyframes wave { 0%, 100% { rotate: 0deg; } 45% { rotate: -7deg; } 55% { rotate: 4deg; } }
+.title h1 { margin: 14px 0 8px; font-weight: 300; font-size: clamp(46px, min(8.4vw, 13vh), 112px); line-height: .92; letter-spacing: -.025em; text-shadow: 0 6px 30px rgba(0,0,0,.25); }
+.t-rule { display: flex; align-items: center; justify-content: center; gap: 14px; margin: 0; font-size: 12.5px; letter-spacing: .32em; text-transform: lowercase; opacity: .92; }
+.t-rule::before, .t-rule::after { content: ""; width: clamp(28px, 6vw, 72px); height: 1px; background: rgba(255,255,255,.75); }
+.t-sub { max-width: 440px; margin: 16px auto 0; font-size: clamp(15px, 1.5vw, 18px); line-height: 1.45; opacity: .94; }
+.t-fan { display: flex; justify-content: center; align-items: flex-end; margin: clamp(22px, 4vh, 40px) auto 0; height: calc(var(--tw) * 1.39 + 30px); --tw: clamp(72px, min(11vw, 17vh), 148px); }
+.t-card { position: relative; width: var(--tw); border: 0; padding: 0; background: none; margin: 0 calc(var(--tw) * -.04); cursor: pointer;
+  transform: translateY(var(--y)) rotate(var(--r)); transition: transform .35s cubic-bezier(.2,.8,.2,1); animation: dealIn .8s cubic-bezier(.2,.8,.2,1) both; animation-delay: calc(.25s + var(--i) * .09s); }
+.t-card img { width: 100%; aspect-ratio: 520/721; object-fit: cover; display: block; border-radius: 10px; box-shadow: 0 14px 30px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.18); transition: box-shadow .3s; }
+.t-card .lab { position: absolute; left: 50%; bottom: -30px; translate: -50% 0; font-size: 13px; padding: 2px 10px; border-radius: 999px; background: var(--c); color: var(--ink); opacity: 0; transition: opacity .25s, bottom .25s; white-space: nowrap; }
+.t-card:hover, .t-card:focus-visible { transform: translateY(calc(var(--y) - 26px)) rotate(0deg) scale(1.07); z-index: 2; outline: none; }
+.t-card:hover img, .t-card:focus-visible img { box-shadow: 0 22px 40px rgba(0,0,0,.45), 0 0 0 3px #fff, 0 0 40px 6px var(--c); }
+.t-card:hover .lab, .t-card:focus-visible .lab { opacity: 1; bottom: -34px; }
+@keyframes dealIn { from { opacity: 0; transform: translateY(80px) rotate(0deg) scale(.85); } }
+.t-hint { margin: 40px 0 0; font-size: 14px; letter-spacing: .04em; opacity: .85; }
+.t-hint b { font-weight: 600; }
+.playbtn { display: inline-flex; align-items: center; gap: 10px; margin-top: clamp(16px, 2.6vh, 26px); border: 0; border-radius: 999px; padding: 14px 40px 14px 44px;
+  background: var(--yellow); color: var(--ink); font-size: clamp(19px, 2vw, 23px); font-weight: 600; letter-spacing: .02em; text-transform: lowercase;
+  box-shadow: 0 5px 0 #B47F05, 0 14px 30px rgba(0,0,0,.3); transition: transform .15s, box-shadow .15s; animation: tIn .6s ease .45s both; }
+.playbtn span { font-size: .7em; }
+.playbtn:hover { transform: translateY(-2px); box-shadow: 0 7px 0 #B47F05, 0 18px 34px rgba(0,0,0,.32); }
+.playbtn:active { transform: translateY(3px); box-shadow: 0 2px 0 #B47F05, 0 8px 18px rgba(0,0,0,.3); }
+.playbtn:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
+.linkbtn { background: none; border: 0; color: #fff; text-decoration: underline; text-underline-offset: 4px; font-size: 14px; opacity: .85; margin-top: 8px; padding: 6px; }
+.linkbtn:hover { opacity: 1; }
+.linkbtn:focus-visible { outline: 2px solid #fff; border-radius: 4px; }
+.t-foot { position: relative; margin-top: clamp(22px, 5vh, 52px); display: flex; align-items: center; justify-content: center; gap: 14px; font-size: 12px; opacity: .8; pointer-events: none; }
+.t-foot img { height: 30px; }
+.t-foot i { width: 1px; height: 22px; background: rgba(255,255,255,.5); }
+.howsheet { width: min(480px, 100%); background: var(--cream); color: var(--ink); border-radius: 18px; padding: 24px; box-shadow: 0 24px 60px rgba(0,0,0,.45); }
+.howsheet h2 { margin: 0 0 8px; font-weight: 400; color: var(--orange); font-size: 26px; }
+.howsheet ol { padding-left: 20px; line-height: 1.5; }
+.howsheet p { line-height: 1.45; }
+
+@media (max-height: 780px) and (min-width: 721px) {
+  .title { padding-top: 48px; }
+  .t-hand { width: 44px; }
+  .title h1 { margin: 6px 0 6px; }
+  .t-sub { margin-top: 10px; }
+  .t-fan { margin-top: 18px; }
+  .t-hint { margin-top: 34px; }
+  .t-foot { margin-top: 12px; }
+}
