@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The Elemental Five</title>
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/table.css">
+<link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+<div id="table">
+  <div id="vids" aria-hidden="true"></div>
+  <div id="tint" aria-hidden="true"></div>
+  <div class="rings" aria-hidden="true"><span></span><span></span><span></span></div>
+  <canvas id="fx" aria-hidden="true"></canvas>
+  <div id="seats"></div>
+  <div id="deck" aria-hidden="true"></div>
+  <div id="stage"></div>
+  <button id="back" class="backpill" type="button" hidden></button>
+  <div id="prompt" aria-live="polite"></div>
+  <div id="actbar"></div>
+  <div id="hand" role="group" aria-label="Jouw kaarten"></div>
+  <div id="me"><div class="av">jij</div><div class="lab" id="meLab">0 kaarten</div><div class="minis" id="minis"></div></div>
+</div>
+<header class="top">
+    <div class="brand"><img id="brandImg" alt=""><span>the elemental five</span></div>
+    <div class="pill"><span id="steps" aria-hidden="true"></span><span id="status" aria-live="polite">kies hoe je wilt spelen</span></div>
+    <div class="topr"><button class="ghost icon" id="sound" type="button" aria-pressed="true" title="geluid aan of uit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z" fill="currentColor"/><path class="w1" d="M16.5 8.5a5 5 0 0 1 0 7" /><path class="w2" d="M19 6a8.5 8.5 0 0 1 0 12" /><path class="x" d="M16 9l5 6M21 9l-5 6" /></svg><span>geluid</span></button><button class="ghost" id="restart" type="button">opnieuw</button></div>
+  </header>
+<div id="toast" role="status"></div>
+<div id="undo" role="status" hidden><span></span><button type="button">ongedaan maken</button></div>
+<div id="ov"></div>
+
+</body>
+</html>

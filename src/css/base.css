@@ -1,0 +1,21 @@
+/* colours, sizes and the page itself */
+:root {
+  --orange: #EA561F;
+  --orange-dark: #B8380E;
+  --yellow: #FAB512;
+  --ink: #2A1810;
+  --cream: #FFF6E6;
+  --vuur: #EA561F;
+  --lucht: #74CCE2;
+  --aarde: #FAB512;
+  --water: #6BCB9B;
+  --ether: #5F74A3;
+  --cw: clamp(84px, min(15vh, 13vw), 150px);   /* hand card width */
+  --bw: clamp(180px, min(31vh, 28vw), 280px);  /* stage card width */
+  --font: "Gill Sans", "Gill Sans MT", "Gill Sans Nova", Cabin, Calibri, "Segoe UI", system-ui, sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font-family: var(--font); color: #fff; background: #3a0d03; overflow: hidden; -webkit-font-smoothing: antialiased; }
+button { font: inherit; cursor: pointer; }
+

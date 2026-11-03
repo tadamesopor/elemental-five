@@ -1,0 +1,37 @@
+/* ---------- small screens ---------- */
+@media (max-width: 720px), (max-height: 560px) {
+  :root { --cw: clamp(70px, 21vw, 104px); --bw: clamp(200px, min(64vw, 40vh), 270px); }
+  .brand span { display: none; }
+  .top { padding: 8px 10px; }
+  .pill { font-size: 12px; padding: 4px 10px; }
+  #deck { display: none; }
+  #me { bottom: auto; top: 64px; left: 10px; }
+  #me .lab { display: none; }
+  #me .av { width: 40px; height: 40px; font-size: 13px; }
+  #me .minis img { width: 20px; height: 28px; }
+  .seat .got { display: none; }
+  .ghost.icon span { display: none; }
+  .t-fan { --tw: clamp(60px, 19vw, 90px); }
+  .t-hint { margin-top: 40px; }
+  .t-card { margin: 0 calc(var(--tw) * -.16); }
+  .t-foot { gap: 10px; font-size: 11px; }
+  .t-foot img { height: 24px; }
+  .esheet h3 { font-size: 22px; }
+  .esheet .row img { width: 58px; }
+  .esheet .row p { font-size: 13.5px; }
+  .swipehint { top: calc(46% - var(--bw) * .69 - 30px); }
+  .backpill { left: 10px; top: calc(17% + 46px); font-size: 13px; padding: 5px 11px; }
+  #undo { font-size: 14px; width: min(92vw, 380px); justify-content: space-between; }
+  #undo button { flex: none; }
+  .seat .name { font-size: 11px; padding: 1px 6px; }
+  #prompt { font-size: 14px; padding: 7px 12px; }
+  .btn { padding: 10px 14px; font-size: 14.5px; }
+  .act { gap: 8px; }
+  #hand[data-n="4"] .hc, #hand[data-n="5"] .hc { margin: 0 calc(var(--cw) * -.24); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #table::before { animation: none; }
+  .big { transition: none; }
+  .breath .run { animation: none; stroke-dashoffset: 0; }
+  .seat.current .tok { animation: none; box-shadow: 0 0 0 4px #fff; }
+}

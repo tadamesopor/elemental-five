@@ -1,0 +1,113 @@
+/* ---------- table ---------- */
+#table {
+  position: fixed; inset: 0; overflow: hidden;
+  background:
+    radial-gradient(ellipse 60% 55% at 50% 50%, rgba(255,190,90,.38), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 52%, #F0672A 0%, #C93F10 45%, #7A1F06 80%, #3a0d03 100%);
+}
+#table::before { /* soft light rays */
+  content: ""; position: absolute; inset: -40%;
+  background: repeating-conic-gradient(from 0deg at 50% 50%, rgba(255,255,255,.045) 0 6deg, transparent 6deg 18deg);
+  animation: spin 160s linear infinite; pointer-events: none;
+}
+/* three rings, like the floor cards: ring 1 = card 1, ring 2 = cards 2-3, ring 3 = cards 4-7 */
+.rings { position: absolute; left: 50%; top: 48%; pointer-events: none; }
+.rings span { position: absolute; left: 0; top: 0; translate: -50% -50%; border-radius: 50%; border: 2px solid rgba(255,255,255,.13); }
+.rings span:nth-child(1) { width: 34vmin; height: 34vmin; }
+.rings span:nth-child(2) { width: 62vmin; height: 62vmin; border-style: dashed; }
+.rings span:nth-child(3) { width: 92vmin; height: 92vmin; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ---------- top bar ---------- */
+.top { position: fixed; left: 0; right: 0; top: 0; z-index: 25; display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; gap: 10px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; }
+.brand img { width: 34px; height: 46px; object-fit: cover; border-radius: 5px; box-shadow: 0 2px 8px rgba(0,0,0,.35); }
+.pill { background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 6px 14px; font-size: 14px; max-width: 52vw; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ghost { background: rgba(0,0,0,.25); color: #fff; border: 1px solid rgba(255,255,255,.35); border-radius: 999px; padding: 7px 16px; font-size: 14px; }
+.ghost:hover { background: rgba(0,0,0,.4); }
+
+/* ---------- element seats (like the players around an online card table) ---------- */
+#seats { position: absolute; inset: 0; pointer-events: none; z-index: 3; }
+.seat { position: absolute; translate: -50% -50%; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: opacity .4s, filter .4s; }
+.seat .tok { width: clamp(46px, 7.4vmin, 74px); aspect-ratio: 1; border-radius: 50%; background-size: cover; background-position: center; border: 3px solid var(--c); box-shadow: 0 4px 14px rgba(0,0,0,.4); position: relative; }
+.seat .name { background: var(--c); color: var(--ink); font-size: 13px; padding: 2px 10px; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,.3); }
+.seat .got { font-size: 12px; min-height: 16px; background: rgba(0,0,0,.3); padding: 1px 8px; border-radius: 999px; }
+.seat .got:empty { visibility: hidden; }
+.seat.current .tok { animation: glow 1.6s ease-in-out infinite; }
+.seat.done .tok::after { content: "✓"; position: absolute; right: -6px; bottom: -4px; width: 22px; height: 22px; border-radius: 50%; background: #fff; color: var(--ink); display: grid; place-items: center; font-size: 13px; font-weight: 700; }
+.seat.idle { opacity: .55; filter: saturate(.6); }
+@keyframes glow { 0%,100% { box-shadow: 0 0 0 0 rgba(255,255,255,.7), 0 4px 14px rgba(0,0,0,.4); } 50% { box-shadow: 0 0 0 10px rgba(255,255,255,0), 0 4px 14px rgba(0,0,0,.4); } }
+
+/* ---------- center ---------- */
+#deck { position: absolute; z-index: 2; left: calc(50% - var(--bw) * .5 - var(--cw) - 4vw); top: 46%; translate: 0 -50%; width: var(--cw); aspect-ratio: 520/721; }
+#deck .c { position: absolute; inset: 0; border-radius: 10px; background: center/cover; box-shadow: 0 3px 8px rgba(0,0,0,.4); }
+#stage { position: absolute; z-index: 4; left: 50%; top: 46%; translate: -50% -50%; width: var(--bw); aspect-ratio: 520/721; perspective: 1400px; }
+#stage:empty { display: none; }
+
+/* big flip card */
+.big { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2,.7,.2,1); }
+.big.flipped { transform: rotateY(180deg); }
+.face { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 16px; overflow: hidden; box-shadow: 0 18px 40px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.15); }
+.face img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.face.text { transform: rotateY(180deg); background: var(--orange); color: #fff; display: flex; flex-direction: column; padding: 18px 18px 14px; text-align: center; }
+.face.text h2 { margin: 0 0 8px; font-weight: 400; font-size: clamp(18px, calc(var(--bw) * .085), 26px); text-transform: lowercase; }
+.face.text .body { flex: 1; overflow-y: auto; font-size: clamp(12.5px, calc(var(--bw) * .05), 15.5px); line-height: 1.38; scrollbar-width: thin; }
+.face.text .body p { margin: 0 0 6px; }
+.face.text .body.more { -webkit-mask-image: linear-gradient(#000 80%, transparent); mask-image: linear-gradient(#000 80%, transparent); }
+.face.text .body { display: flex; flex-direction: column; }
+.face.text:not(.open) .body { justify-content: center; }
+.face.text .short { font-size: clamp(17px, calc(var(--bw) * .076), 23px); line-height: 1.32; margin: 0; }
+.readcard details { margin: 6px 0 14px; }
+.readcard summary { font-size: 14px; }
+.face.text .full { display: none; text-align: left; }
+.face.text.open .short { display: none; }
+.face.text.open .full { display: block; }
+.more-link { background: none; border: 0; color: #fff; text-decoration: underline; text-underline-offset: 3px; font-size: 12.5px; opacity: .9; padding: 4px; }
+.readcard .full { font-size: 14px; text-align: left; opacity: .95; }
+.face.text .q { margin: 6px 0 0; font-weight: 700; font-style: italic; font-size: clamp(14px, calc(var(--bw) * .056), 17px); }
+.pause { display: flex; align-items: center; gap: 8px; justify-content: center; margin-top: 6px; font-size: 12.5px; }
+.breath { width: 26px; height: 26px; flex: none; }
+.breath circle { fill: none; stroke: rgba(255,255,255,.35); stroke-width: 3; }
+.breath .run { stroke: #fff; stroke-dasharray: 69; stroke-dashoffset: 69; transform: rotate(-90deg); transform-origin: 50% 50%; animation: fill 7s linear forwards; }
+@keyframes fill { to { stroke-dashoffset: 0; } }
+.face.text .logo { font-size: 11px; opacity: .8; margin-top: 6px; }
+
+/* ---------- prompt + actions ---------- */
+#prompt { position: absolute; z-index: 6; left: 50%; translate: -50% 0; bottom: calc(var(--cw) * 1.39 + 64px); background: rgba(42,24,16,.82); backdrop-filter: blur(4px); padding: 9px 18px; border-radius: 12px; font-size: 16px; text-align: center; max-width: min(92vw, 560px); box-shadow: 0 6px 18px rgba(0,0,0,.3); }
+#prompt:empty { display: none; }
+#actbar { position: absolute; z-index: 7; left: 50%; translate: -50% 0; bottom: calc(var(--cw) * 1.39 + 30px); }
+.act { display: flex; gap: 10px; justify-content: center; }
+.btn { white-space: nowrap; border: 0; border-radius: 10px; padding: 11px 22px; font-size: 16px; font-weight: 600; box-shadow: 0 4px 0 rgba(0,0,0,.28), 0 8px 18px rgba(0,0,0,.25); transition: transform .12s, box-shadow .12s; text-transform: lowercase; display: inline-block; }
+.btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,.28); }
+.btn.primary { background: var(--yellow); color: var(--ink); }
+.btn.second { background: #fff; color: var(--ink); }
+.btn.dark { background: var(--ink); color: #fff; }
+.btn:focus-visible, .hc:focus-visible, .ghost:focus-visible, .choice:focus-visible, .rc:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+/* ---------- hand ---------- */
+#hand { position: absolute; z-index: 5; left: 50%; bottom: 12px; translate: -50% 0; display: flex; justify-content: center; align-items: flex-end; height: calc(var(--cw) * 1.39 + 20px); }
+.hc { position: relative; width: var(--cw); aspect-ratio: 520/721; border: 0; padding: 0; border-radius: 10px; background: center/cover; margin: 0 calc(var(--cw) * -.06); box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.2); transform: translateY(var(--y, 0)) rotate(var(--r, 0deg)); transition: transform .25s, box-shadow .25s, opacity .3s; }
+.hc:hover, .hc.active { transform: translateY(calc(var(--y, 0px) - 18px)) rotate(var(--r, 0deg)) scale(1.04); z-index: 3; }
+.hc.active { box-shadow: 0 0 0 3px #fff, 0 12px 26px rgba(0,0,0,.5); }
+.hc.read::after { content: "gelezen"; position: absolute; left: 50%; bottom: -6px; translate: -50% 0; font-size: 11px; background: #fff; color: var(--ink); padding: 1px 8px; border-radius: 999px; }
+.hc.ghosted { opacity: 0; }
+#hand[data-n="4"] .hc, #hand[data-n="5"] .hc { margin: 0 calc(var(--cw) * -.14); }
+
+/* ---------- player badge ---------- */
+#me { position: absolute; z-index: 5; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 10px; }
+#me .av { width: 52px; height: 52px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); border: 3px solid var(--yellow); font-size: 15px; }
+#me .lab { background: rgba(0,0,0,.35); padding: 4px 10px; border-radius: 8px; font-size: 13px; }
+#me .minis { display: flex; gap: 4px; }
+#me .minis img { width: 26px; height: 36px; object-fit: cover; border-radius: 4px; box-shadow: 0 2px 5px rgba(0,0,0,.4); }
+
+/* ---------- white card borders, like a printed game card ---------- */
+.face { border: calc(var(--bw) * .055) solid #fff; background: #fff; border-radius: calc(var(--bw) * .075); }
+.face img { border-radius: calc(var(--bw) * .03); }
+.face.text { border-color: #fff; }
+.hc { border: calc(var(--cw) * .06) solid #fff; background-clip: padding-box; background-origin: padding-box; border-radius: calc(var(--cw) * .09); }
+#deck .c { border: calc(var(--cw) * .06) solid #fff; border-radius: calc(var(--cw) * .09); }
+.t-card img { border: calc(var(--tw) * .06) solid #fff; border-radius: calc(var(--tw) * .09); background: #fff; }
+.fly { border-style: solid; border-color: #fff; background: #fff; }
+#me .minis img { border: 2px solid #fff; }
+.esheet .row img { border: 4px solid #fff; }
+
