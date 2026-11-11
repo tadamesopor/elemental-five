@@ -11,7 +11,7 @@ function stopAttract() { clearInterval(attract); attract = 0; }
 
 function startScreen() {
   FX.set(null); SND.setAmbient(null); hideNav(); $('#undo').hidden = true; $('.esheet')?.remove();
-  S = fresh(null); paintSeats(); paintDeck();
+  S = fresh(null);
   $('#stage').innerHTML = ''; clearHand(); setPrompt(''); setActions([]); paintMe();
   setStatus('');
   document.body.classList.add('titling');
@@ -59,7 +59,7 @@ function startPlay() {
   stopAttract();
   $('.title')?.classList.add('out');
   document.body.classList.remove('titling');
-  S = fresh('heel'); paintSeats(); paintMe();
+  S = fresh('heel'); paintMe();
   setTimeout(() => { if ($('.title.out')) $('#ov').innerHTML = ''; }, 450);
   pickElement();
 }
@@ -68,7 +68,7 @@ async function startFrom(el, btn) {
   stopAttract();
   $('.title')?.classList.add('out');
   document.body.classList.remove('titling');
-  S = fresh('heel'); paintSeats(); paintMe();
+  S = fresh('heel'); paintMe();
   setTimeout(() => { if ($('.title.out')) $('#ov').innerHTML = ''; }, 450);
   openElement(el, from);
 }
@@ -76,13 +76,13 @@ async function startFrom(el, btn) {
 function begin(mode, keep = {}) {
   $('#ov').innerHTML = '';
   S = fresh(mode); S.picks = { ...keep };
-  paintSeats(); paintMe();
+  paintMe();
   pickElement();
 }
 
 async function pickElement() {
   FX.set(null); SND.setAmbient(null); hideNav();
-  S.cur = null; S.path = []; paintSeats(); $('#stage').innerHTML = '';
+  S.cur = null; S.path = []; $('#stage').innerHTML = '';
   const left = EL.filter(e => !S.picks[e.id]);
   const done = Object.keys(S.picks).length;
   setStatus(`element ${done + 1} van 5`);
@@ -96,7 +96,7 @@ async function pickElement() {
 async function openElement(el, fromBtn) {
   S.busy = true;
   S.cur = el; S.level = 1; S.branch = null; S.path = [byId[el].name]; S.read = new Set();
-  paintSeats(); paintPath();
+  paintPath();
   const from = fromBtn && fromBtn.getBoundingClientRect ? rect(fromBtn) : (fromBtn || deckRect());
   clearHand(); setPrompt(''); hideNav();
   if (S.vals[el] == null) S.vals[el] = 50;
@@ -105,11 +105,11 @@ async function openElement(el, fromBtn) {
   const st = $('#stage'); st.style.visibility = 'hidden';
   await fly(img(el, 1), from, rect(st), 520);
   st.style.visibility = '';
-  await flipStage(); restartBreath(); bindFeel(el);
+  await flipStage(); markScroll(); showFeel(el);
   S.busy = false; paintNav();
   setActions([
     { label: 'verder', on: () => { setPrompt(''); dealPair(el, [2, 3]); } },
-    { label: 'ander element', kind: 'second', on: goBack },
+    { label: 'ander element', kind: 'link', on: goBack },
   ]);
 }
 
@@ -128,16 +128,21 @@ async function dealPair(el, ns) {
 }
 
 async function readCard(el, n, btn) {
+  const game = S;
   S.busy = true; S.active = n; $('.swipehint')?.remove();
+  setActions([]); setPrompt('');
   [...$('#hand').children].forEach(b => b.classList.toggle('active', b === btn));
   const from = rect(btn);
+  $('#table').classList.add('reading');          // the two cards make room for the big card
   stageCard(el, n);
   const st = $('#stage'); st.style.visibility = 'hidden';
   await fly(img(el, n), from, rect(st), 420);
   st.style.visibility = '';
-  await flipStage(); restartBreath();
+  await flipStage(); markScroll();
+  // the first time you read a card: one slow breath before you can choose
+  if (!S.read.has(n)) await breathe(byId[el].cards[n - 1].shortPause);
+  if (S !== game || S.cur !== el || S.active !== n) return;   // the player restarted during the breath
   S.read.add(n); btn.classList.add('read');
-  setPrompt('');
   if (matchMedia('(pointer: coarse)').matches && !readCard.hinted) {
     readCard.hinted = true;
     const hnt = document.createElement('div'); hnt.className = 'swipehint'; hnt.textContent = 'veeg de kaart opzij om te wisselen';
@@ -166,11 +171,11 @@ async function choose(el, n) {
   clearHand(); setPrompt(''); hideNav();
   const st = $('#stage'); const from = rect(st);
   st.innerHTML = '';
-  const tok = $('#seat-' + el + ' .tok'); const tr = rect(tok);
+  const tr = rect($('#slot-' + el));   // the chosen card flies to its own slot
   await fly(img(el, n), from, tr, 620);
-  paintSeats(); paintMe();
+  paintMe();
   FX.burst(el, tr.left + tr.width / 2, tr.top + tr.height / 2); SND.pick(el);
-  const seat = $('#seat-' + el); seat.classList.remove('pop'); void seat.offsetWidth; seat.classList.add('pop');
+  $('#slot-' + el).classList.add('pop');
   await wait(500);
   S.busy = false;
   elementDone(el, n);
@@ -203,7 +208,7 @@ function elementDone(el, n) {
     if (a === 'next') return all ? finish() : pickElement();
     if (a === 'stop') return finish();
     if (a === 'undo') {
-      delete S.picks[el]; S.cur = el; paintSeats(); paintMe();
+      delete S.picks[el]; S.cur = el; paintMe();
       S.path.pop(); paintPath();
       FX.set(el, (S.vals[el] ?? 50) / 100); SND.setAmbient(el);
       return dealPair(el, S.branch === 2 ? [4, 5] : [6, 7]);

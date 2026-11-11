@@ -1,6 +1,6 @@
 /* ---------- title screen ---------- */
-body.titling #seats, body.titling #deck, body.titling #me, body.titling #hand, body.titling .top .pill, body.titling .brand { opacity: 0; pointer-events: none; }
-#seats, #deck, #me, .top .pill, .brand { transition: opacity .6s; }
+body.titling #me, body.titling #hand, body.titling .top .pill, body.titling .brand { opacity: 0; pointer-events: none; }
+#me, .top .pill, .brand { transition: opacity .6s; }
 .title { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 60px 16px 20px; overflow-y: auto;
   background: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(0,0,0,0) 0%, rgba(25,6,0,.42) 100%); animation: tIn .7s ease both; }
 .title.out { animation: tOut .45s ease forwards; pointer-events: none; }

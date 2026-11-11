@@ -55,7 +55,7 @@ async function renderMix() {
 
 async function finish() {
   FX.set(null); SND.setAmbient(null); hideNav();
-  S.cur = null; paintSeats(); clearHand(); setPrompt(''); setActions([]); $('#stage').innerHTML = '';
+  S.cur = null; clearHand(); setPrompt(''); setActions([]); $('#stage').innerHTML = '';
   const nDone = Object.keys(S.picks).length, all = nDone === 5;
   setStatus(all ? 'jouw elemental five' : 'jouw kaarten');
   const ids = EL.map(e => e.id).filter(id => S.picks[id]);
@@ -93,7 +93,7 @@ async function finish() {
 
 function replayElement(id) {
   $('#ov').innerHTML = '';
-  delete S.picks[id]; paintSeats(); paintMe();
+  delete S.picks[id]; paintMe();
   openElement(id, deckRect());
 }
 

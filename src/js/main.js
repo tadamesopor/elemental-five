@@ -20,7 +20,6 @@ $('#sound').onclick = () => { const on = SND.toggle(); $('#sound').setAttribute(
   st.addEventListener('pointercancel', () => { x0 = null; st.classList.remove('drag'); st.style.transform = ''; });
 })();
 addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.readov').forEach(o => o.remove()); });
-let rz; addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(layoutSeats, 150); });
+$('#minis').onclick = e => { const b = e.target.closest('[data-el]'); if (b && S.picks[b.dataset.el]) showRead(b.dataset.el); };
 S = fresh(null);
-layoutSeats();
 startScreen();

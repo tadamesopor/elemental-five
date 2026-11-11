@@ -113,7 +113,7 @@ var SND = (() => {
 
 /* interface sounds: hover with a mouse, click on every button or card */
 (() => {
-  const SEL = 'button, [role="button"], a, .t-card, .seat, .hc';
+  const SEL = 'button, [role="button"], a, .t-card, .hc';
   let hovered = null;
   ['pointerdown', 'keydown'].forEach(ev => window.addEventListener(ev, () => SND.unlock(), { capture: true, once: false }));
   document.addEventListener('pointerover', e => {

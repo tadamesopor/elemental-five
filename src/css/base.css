@@ -10,8 +10,10 @@
   --aarde: #FAB512;
   --water: #6BCB9B;
   --ether: #5F74A3;
-  --cw: clamp(84px, min(15vh, 13vw), 150px);   /* hand card width */
-  --bw: clamp(180px, min(31vh, 28vw), 280px);  /* stage card width */
+  --cy: 46%;                                   /* vertical centre of the table: cards sit here */
+  --bw: clamp(200px, min(41vh, 40vw), 400px);  /* the big card you read */
+  --mw: clamp(96px, min(24vh, 15vw), 190px);   /* card width when you choose between the five elements */
+  --pw: clamp(130px, min(36vh, 38vw), 300px);  /* card width when you choose between two cards */
   --font: "Gill Sans", "Gill Sans MT", "Gill Sans Nova", Cabin, Calibri, "Segoe UI", system-ui, sans-serif;
 }
 * { box-sizing: border-box; }

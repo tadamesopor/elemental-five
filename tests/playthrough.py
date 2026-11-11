@@ -26,7 +26,7 @@ AudioBufferSourceNode.prototype.start = function (...a) {
 
 
 async def set_slider(page, value):
-    await page.evaluate("""v => { const i = document.querySelector('#stage .feel input');
+    await page.evaluate("""v => { const i = document.querySelector('.feel input');
       i.value = v; i.dispatchEvent(new Event('input', { bubbles: true })); }""", str(value))
 
 

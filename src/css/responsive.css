@@ -1,15 +1,17 @@
 /* ---------- small screens ---------- */
 @media (max-width: 720px), (max-height: 560px) {
-  :root { --cw: clamp(70px, 21vw, 104px); --bw: clamp(200px, min(64vw, 40vh), 270px); }
+  :root { --bw: clamp(200px, min(74vw, 40vh), 300px); --mw: clamp(84px, 27vw, 124px); --pw: clamp(120px, min(40vw, 30vh), 190px); }
   .brand span { display: none; }
   .top { padding: 8px 10px; }
   .pill { font-size: 12px; padding: 4px 10px; }
-  #deck { display: none; }
-  #me { bottom: auto; top: 64px; left: 10px; }
-  #me .lab { display: none; }
-  #me .av { width: 40px; height: 40px; font-size: 13px; }
-  #me .minis img { width: 20px; height: 28px; }
-  .seat .got { display: none; }
+  #me { bottom: auto; top: 62px; left: 10px; --sw: 22px; }
+  #me .minis { gap: 4px; padding: 5px; border-radius: 9px; }
+  .slot { border-width: 1.5px; border-radius: 4px; }
+  .feel { padding: 8px 14px; }
+  .feel label { font-size: 15px; }
+  .breathe .orb { width: 44px; height: 44px; }
+  .breathe b { font-size: 16px; }
+  .breathe .txt span { font-size: 13.5px; }
   .ghost.icon span { display: none; }
   .t-fan { --tw: clamp(60px, 19vw, 90px); }
   .t-hint { margin-top: 40px; }
@@ -19,19 +21,22 @@
   .esheet h3 { font-size: 22px; }
   .esheet .row img { width: 58px; }
   .esheet .row p { font-size: 13.5px; }
-  .swipehint { top: calc(46% - var(--bw) * .69 - 30px); }
-  .backpill { left: 10px; top: calc(17% + 46px); font-size: 13px; padding: 5px 11px; }
+  .swipehint { top: calc(var(--cy) - var(--bw) * .69 - 30px); }
+  .backpill { left: auto; right: 10px; top: 66px; font-size: 13px; padding: 5px 11px; }
   #undo { font-size: 14px; width: min(92vw, 380px); justify-content: space-between; }
   #undo button { flex: none; }
-  .seat .name { font-size: 11px; padding: 1px 6px; }
   #prompt { font-size: 14px; padding: 7px 12px; }
   .btn { padding: 10px 14px; font-size: 14.5px; }
   .act { gap: 8px; }
   #hand[data-n="4"] .hc, #hand[data-n="5"] .hc { margin: 0 calc(var(--cw) * -.24); }
 }
+/* low windows: a smaller card, a bit higher, so the slider and buttons still fit under it */
+@media (max-height: 640px) {
+  :root { --cy: 42%; --bw: clamp(180px, min(36vh, 74vw), 300px); }
+}
 @media (prefers-reduced-motion: reduce) {
   #table::before { animation: none; }
   .big { transition: none; }
-  .breath .run { animation: none; stroke-dashoffset: 0; }
-  .seat.current .tok { animation: none; box-shadow: 0 0 0 4px #fff; }
+  .rings span { animation: none !important; }
+  .feel, .feel .ends .hint { animation: none; }
 }
