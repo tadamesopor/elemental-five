@@ -97,7 +97,7 @@ function offerUndo(text, ms = 3000) {
   });
 }
 
-/* ---------- stage: the big card you read ---------- */
+/* ---------- stage: the big card 1 of an element ---------- */
 function stageCard(el, n) {
   const c = byId[el].cards[n - 1];
   const head = n === 1 ? c.title : `${byId[el].name}: ${c.title.toLowerCase()}`;
@@ -152,17 +152,17 @@ function showFeel(el) {
   };
   inp.addEventListener('input', () => { upd(); inp.closest('.feel').classList.add('used'); }); upd();
 }
-// one slow breath before the buttons appear. Tap the circle (or press Enter) to skip it.
-// With reduced motion there is no waiting: the pause text is on the card itself.
-function breathe(text) {
-  if (reduce) return Promise.resolve();
+// one slow breath before you can choose. Tap the circle (or press Enter) to skip it.
+// With reduced motion there is no waiting: the pause text is on the cards themselves.
+function breathe(text, where = $('#moment')) {
+  if (reduce || !where) return Promise.resolve();
   const IN = 3000, OUT = 3000;
-  $('#moment').innerHTML = `
+  where.innerHTML = `
     <button class="breathe" type="button" aria-label="Adempauze. ${text} Druk om over te slaan.">
       <span class="orb" aria-hidden="true"></span>
       <span class="txt"><b>adem in</b><span>${text}</span><small>tik om over te slaan</small></span>
     </button>`;
-  const box = $('#moment .breathe');
+  const box = where.querySelector('.breathe');
   box.focus({ preventScroll: true });
   return new Promise(res => {
     const t1 = setTimeout(() => { const b = box.querySelector('b'); if (b) b.textContent = 'adem uit'; }, IN);
@@ -173,10 +173,57 @@ function breathe(text) {
   });
 }
 
-/* ---------- hand: the cards you choose from, in the middle of the table ---------- */
+/* ---------- pair: two cards face up next to each other, each with its own button ---------- */
+function pairCards(el, ns) {
+  const box = $('#pair'); box.classList.remove('chosen');
+  box.innerHTML = `
+    <p class="pq">Welke van deze twee kaarten past het beste bij jouw gevoel?</p>
+    <div class="pmoment"></div>
+    <div class="prow">${ns.map(n => {
+      const c = byId[el].cards[n - 1], head = `${byId[el].name}: ${c.title.toLowerCase()}`;
+      return `
+      <div class="pc" data-n="${n}">
+        <div class="big">
+          <div class="face"><img alt="" src="${img(el, n)}"></div>
+          <div class="face text" role="article" aria-label="${head}">
+            <h2>${head}</h2>
+            <div class="body"><p class="short">${c.short}</p></div>
+            <button class="more-link" type="button" aria-haspopup="dialog">lees de hele kaart</button>
+            <p class="pause">${c.shortPause}</p>
+          </div>
+        </div>
+        <button class="btn primary pick" type="button" disabled aria-label="kies deze kaart: ${c.title.toLowerCase()}">kies deze kaart</button>
+      </div>`;
+    }).join('')}</div>`;
+  box.querySelectorAll('.pc').forEach(pc => {
+    const n = Number(pc.dataset.n);
+    pc.querySelector('.pick').onclick = () => choose(el, n);
+    pc.querySelector('.more-link').onclick = e => showFull(el, n, e.currentTarget);
+  });
+}
+function clearPair() { const p = $('#pair'); p.innerHTML = ''; p.classList.remove('chosen'); }
+
+// "lees de hele kaart" on one of the two cards: the full text of that card, bigger, in a panel.
+// Closing (button, Escape or a tap outside) goes back to the two cards.
+function showFull(el, n, back) {
+  const c = byId[el].cards[n - 1];
+  const holder = document.createElement('div');
+  holder.className = 'overlay readov fullov'; holder.style.zIndex = 30;
+  holder.innerHTML = `<div class="readcard wide" role="dialog" aria-modal="true" aria-labelledby="fullT">
+    <h2 id="fullT">${byId[el].name}: ${c.title.toLowerCase()}</h2>
+    <div class="full">${c.text.map(t => `<p>${t}</p>`).join('')}</div>
+    ${c.pause ? `<p class="fpause">${c.pause}</p>` : ''}
+    <button class="btn primary" type="button">terug naar de twee kaarten</button></div>`;
+  const close = () => { holder.remove(); back?.focus({ preventScroll: true }); };
+  holder.onclick = e => { if (e.target === holder || e.target.closest('.btn')) close(); };
+  holder.onkeydown = e => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
+  document.body.appendChild(holder);
+  holder.querySelector('.btn').focus();
+}
+
+/* ---------- hand: the five element cards, in the middle of the table ---------- */
 async function deal(cards, onPick, opts = {}) {
   const hand = $('#hand'), table = $('#table'); hand.innerHTML = '';
-  table.classList.remove('reading');
   const n = cards.length; hand.dataset.n = n; table.dataset.n = n;   // the css sizes the cards by how many there are
   cards.forEach((c, i) => {
     const b = document.createElement('button');
@@ -198,4 +245,5 @@ async function deal(cards, onPick, opts = {}) {
     b.classList.remove('ghosted');
   }
 }
-function clearHand() { $('#hand').innerHTML = ''; $('#table').classList.remove('reading'); }
+// clears every card you can choose from: the five elements and the pair
+function clearHand() { $('#hand').innerHTML = ''; clearPair(); }

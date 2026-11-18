@@ -113,52 +113,47 @@ async function openElement(el, fromBtn) {
   ]);
 }
 
+// two cards to choose from (2 or 3, then 4 or 5, or 6 or 7): both face up next to each other,
+// one slow breath, then you choose directly with the button under a card
 async function dealPair(el, ns) {
-  S.busy = true; setActions([]);
-  S.level = ns[0] >= 4 ? 3 : 2;
-  S.pair = ns; S.read = new Set(); S.active = null; paintNav();
-  const st = $('#stage'); const from = rect(st);
-  const lastN = S.level === 2 ? 1 : S.branch;
-  st.innerHTML = '';
-  await fly(img(el, lastN), from, deckRect(), 360);
-  setPrompt('Welke van deze twee kaarten past het beste bij jouw gevoel? Tik op een kaart om hem te lezen.');
-  await deal(ns.map(n => ({ key: String(n), src: img(el, n), label: `${byId[el].cards[n - 1].title}, kaart ${n}` })), (c, b) => readCard(el, Number(c.key), b), { fromBack: true });
-  S.busy = false;
-  $('#hand .hc')?.focus({ preventScroll: true });
-}
-
-async function readCard(el, n, btn) {
   const game = S;
-  S.busy = true; S.active = n; $('.swipehint')?.remove();
-  setActions([]); setPrompt('');
-  [...$('#hand').children].forEach(b => b.classList.toggle('active', b === btn));
-  const from = rect(btn);
-  $('#table').classList.add('reading');          // the two cards make room for the big card
-  stageCard(el, n);
-  const st = $('#stage'); st.style.visibility = 'hidden';
-  await fly(img(el, n), from, rect(st), 420);
-  st.style.visibility = '';
-  await flipStage(); markScroll();
-  // the first time you read a card: one slow breath before you can choose
-  if (!S.read.has(n)) await breathe(byId[el].cards[n - 1].shortPause);
-  if (S !== game || S.cur !== el || S.active !== n) return;   // the player restarted during the breath
-  S.read.add(n); btn.classList.add('read');
-  if (matchMedia('(pointer: coarse)').matches && !readCard.hinted) {
-    readCard.hinted = true;
-    const hnt = document.createElement('div'); hnt.className = 'swipehint'; hnt.textContent = 'veeg de kaart opzij om te wisselen';
-    $('#table').appendChild(hnt); setTimeout(() => hnt.remove(), 5200);
-  }
-  const other = S.pair.find(x => x !== n);
-  const otherBtn = [...$('#hand').children].find(b => b.dataset.key === String(other));
+  S.busy = true; setActions([]); setPrompt('');
+  S.level = ns[0] >= 4 ? 3 : 2;
+  S.pair = ns; paintNav();
+  // the card you come from (card 1, or the card you just chose) leaves over the bottom edge
+  const lastN = S.level === 2 ? 1 : S.branch;
+  const prev = $(`#pair .pc[data-n="${lastN}"] .big`) || $('#stage .big');
+  const from = rect(prev);
+  $('#stage').innerHTML = ''; clearHand();
+  if (from) await fly(img(el, lastN), from, deckRect(), 360);
+  if (S !== game) return;
+
+  // deal both cards with their back up, then turn them over together
+  pairCards(el, ns);
+  const row = $('#pair .prow'); row.style.visibility = 'hidden';
+  const bigs = [...$('#pair').querySelectorAll('.big')];
+  for (const b of bigs) { SND.deal(); await fly(IMG.back, deckRect(), rect(b), 380); }
+  row.style.visibility = '';
+  await wait(120);
+  bigs.forEach(b => b.classList.add('flipped')); SND.flip();
+  await wait(650);
+  if (S !== game || S.pair !== ns) return;
+
+  // one slow breath for both cards, then both buttons work
+  await breathe('Lees beide kaarten en voel welke bij je past.', $('#pair .pmoment'));
+  if (S !== game || S.cur !== el || S.pair !== ns) return;   // the player restarted or went back during the breath
+  const picks = [...$('#pair').querySelectorAll('.pick')];
+  picks.forEach(p => { p.disabled = false; });
   S.busy = false;
-  setActions([
-    { label: 'kies deze kaart', on: () => choose(el, n) },
-    { label: S.read.has(other) ? 'terug naar de andere' : 'lees de andere kaart', kind: 'second', on: () => readCard(el, other, otherBtn) },
-  ]);
+  picks[0]?.focus({ preventScroll: true });
 }
 
 async function choose(el, n) {
+  if (S.busy) return;
   S.busy = true; setActions([]);
+  $('#pair').querySelectorAll('.pick').forEach(p => { p.disabled = true; });
+  const card = $(`#pair .pc[data-n="${n}"]`);
+  card?.classList.add('picked'); $('#pair').classList.add('chosen');   // the other card fades away
   S.path.push(byId[el].cards[n - 1].title); paintPath();
   if (S.level === 2) {
     S.branch = n;
@@ -168,9 +163,8 @@ async function choose(el, n) {
     return dealPair(el, n === 2 ? [4, 5] : [6, 7]);
   }
   S.picks[el] = n;
+  const from = rect(card?.querySelector('.big'));
   clearHand(); setPrompt(''); hideNav();
-  const st = $('#stage'); const from = rect(st);
-  st.innerHTML = '';
   const tr = rect($('#slot-' + el));   // the chosen card flies to its own slot
   await fly(img(el, n), from, tr, 620);
   paintMe();

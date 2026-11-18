@@ -52,10 +52,9 @@ async def play(width, height, tag):
             await page.screenshot(path=SHOTS / f'{tag}_{r + 1}_element.png')
             await page.get_by_role('button', name='verder').click()
             await page.wait_for_timeout(1800)
-            for _ in range(2):                                      # two choices per element
-                await page.locator('#hand .hc').first.click()
-                await page.wait_for_timeout(1300)
-                await page.get_by_role('button', name='kies deze kaart').click()
+            for c in range(2):                                      # two choices per element
+                # both cards lie face up; the buttons work after the breath (click waits until enabled)
+                await page.locator('#pair .pick').nth(c).click(timeout=20000)
                 await page.wait_for_timeout(2300)
             await page.locator('.esheet [data-a="next"]').click()  # next element
             await page.wait_for_timeout(2800)

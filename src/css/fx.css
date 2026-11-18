@@ -47,12 +47,6 @@ body.vidon #table::before { opacity: 0; }
 .slot.pop { animation: pop .7s cubic-bezier(.2,1.6,.4,1); }
 @keyframes pop { 0% { transform: scale(1); } 35% { transform: scale(1.32); } 100% { transform: scale(1); } }
 
-/* swipe */
-#stage { touch-action: pan-y; transition: transform .25s; }
-#stage.drag { transition: none; }
-.swipehint { position: absolute; z-index: 7; left: 50%; translate: -50% 0; top: calc(var(--cy) - var(--bw) * .69 - 34px); background: rgba(42,24,16,.82); padding: 5px 12px; border-radius: 999px; font-size: 13px; pointer-events: none; animation: nudge 1.6s ease-in-out 3; }
-@keyframes nudge { 0%,100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
-
 /* result */
 .mix { width: 100%; border-radius: 14px; display: block; box-shadow: 0 10px 26px rgba(0,0,0,.25); margin: 14px 0 8px; }
 .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }

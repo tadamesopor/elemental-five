@@ -1,6 +1,7 @@
 /* ---------- table ---------- */
 #table {
   position: fixed; inset: 0; overflow: hidden;
+  overflow: clip;   /* hidden can still be scrolled by code (focus, scrollIntoView); clip can't, so the table never shifts */
   background:
     radial-gradient(ellipse 60% 55% at 50% 50%, rgba(255,190,90,.38), transparent 70%),
     radial-gradient(ellipse 120% 90% at 50% 52%, #F0672A 0%, #C93F10 45%, #7A1F06 80%, #3a0d03 100%);
@@ -59,9 +60,8 @@
 .face.text .pause { margin: 6px 0 0; font-size: clamp(12.5px, calc(var(--bw) * .045), 16px); opacity: .95; }
 .face.text .logo { font-size: 11px; opacity: .8; margin-top: 6px; }
 
-/* ---------- prompt (under the cards you choose from) ---------- */
-#table { --hw: var(--mw); }                  /* width of a card in the hand: five elements... */
-#table[data-n="2"] { --hw: var(--pw); }      /* ...or two cards to choose between */
+/* ---------- prompt (under the five element cards) ---------- */
+#table { --hw: var(--mw); }                  /* width of a card in the hand */
 #prompt { position: absolute; z-index: 6; left: 50%; translate: -50% 0; top: calc(var(--cy) + var(--hw) * .7 + 40px); width: max-content; background: rgba(42,24,16,.82); backdrop-filter: blur(4px); padding: 9px 18px; border-radius: 12px; font-size: 16px; text-align: center; max-width: min(92vw, 560px); box-shadow: 0 6px 18px rgba(0,0,0,.3); }
 #prompt:empty { display: none; }
 
@@ -81,16 +81,32 @@
 .btn.link:hover { background: rgba(42,24,16,.85); }
 .btn:focus-visible, .hc:focus-visible, .ghost:focus-visible, .choice:focus-visible, .rc:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
-/* ---------- hand: the cards you choose from, in the middle of the table ---------- */
-#hand { --cw: var(--hw); position: absolute; z-index: 5; left: 50%; top: var(--cy); translate: -50% -50%; display: flex; justify-content: center; align-items: center; transition: opacity .3s; }
-/* while you read one card big, the hand steps aside (still there for the swipe and the 'andere kaart' button) */
-#table.reading #hand { opacity: 0; visibility: hidden; transition: opacity .3s, visibility 0s .3s; }
-#hand[data-n="2"] .hc { margin: 0 calc(var(--cw) * .06); }
+/* ---------- hand: the five element cards, in the middle of the table ---------- */
+#hand { --cw: var(--hw); position: absolute; z-index: 5; left: 50%; top: var(--cy); translate: -50% -50%; display: flex; justify-content: center; align-items: center; }
 .hc { position: relative; width: var(--cw); aspect-ratio: 520/721; border: 0; padding: 0; border-radius: 10px; background: center/cover; margin: 0 calc(var(--cw) * -.06); box-shadow: 0 6px 16px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.2); transform: translateY(var(--y, 0)) rotate(var(--r, 0deg)); transition: transform .25s, box-shadow .25s, opacity .3s; }
-.hc:hover, .hc.active { transform: translateY(calc(var(--y, 0px) - 18px)) rotate(var(--r, 0deg)) scale(1.04); z-index: 3; }
-.hc.active { box-shadow: 0 0 0 3px #fff, 0 12px 26px rgba(0,0,0,.5); }
-.hc.read::after { content: "gelezen"; position: absolute; left: 50%; bottom: -6px; translate: -50% 0; font-size: 11px; background: #fff; color: var(--ink); padding: 1px 8px; border-radius: 999px; }
+.hc:hover { transform: translateY(calc(var(--y, 0px) - 18px)) rotate(var(--r, 0deg)) scale(1.04); z-index: 3; }
 .hc.ghosted { opacity: 0; }
+
+/* ---------- pair: two cards face up next to each other, a button under each ---------- */
+/* --pw: width of one card, so the prompt, the breath, the card and its button fit on one screen */
+#pair { --pw: clamp(150px, min(calc((100vh - 330px) / 1.387), 30vw), 320px);
+  position: absolute; z-index: 5; left: 0; right: 0; top: 70px; bottom: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 6px 16px; overflow-y: auto; pointer-events: none; }
+#pair:empty { display: none; }
+#pair > * { pointer-events: auto; }
+#pair .pq { margin: 0; background: rgba(42,24,16,.82); backdrop-filter: blur(4px); padding: 9px 18px; border-radius: 12px; font-size: 16px; text-align: center; box-shadow: 0 6px 18px rgba(0,0,0,.3); }
+#pair .pmoment { display: flex; justify-content: center; }
+#pair .pmoment:empty { display: none; }
+#pair .prow { display: flex; justify-content: center; align-items: flex-start; gap: clamp(16px, 3vw, 40px); }
+.pc { --bw: var(--pw); width: var(--bw); display: flex; flex-direction: column; align-items: center; gap: 12px; perspective: 1400px; transition: opacity .35s, transform .35s; }
+.pc .big { height: auto; aspect-ratio: 520/721; }
+.pc .face.text .body { justify-content: center; }
+.pc .pick[disabled] { opacity: .45; cursor: default; box-shadow: none; }
+/* after you choose, the other card fades away */
+#pair.chosen .pc:not(.picked) { opacity: 0; transform: translateY(14px); }
+/* "lees de hele kaart" on a pair card: the full text, bigger, in a panel */
+.readcard.wide { width: min(600px, 100%); }
+.readcard.wide .full { font-size: 16.5px; line-height: 1.5; }
+.readcard.wide .fpause { font-style: italic; opacity: .95; }
 #hand[data-n="4"] .hc, #hand[data-n="5"] .hc { margin: 0 calc(var(--cw) * -.14); }
 
 /* ---------- your cards: five slots, one per element ---------- */
